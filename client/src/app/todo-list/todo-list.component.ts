@@ -15,9 +15,15 @@ export class TodoListComponent implements OnInit {
   };
   userIdentity:any
   todos: any;
+  todoIdToUpdate = null;
+  processValidation = false;
   currentTodo = null;
   currentIndex = -1;
   submitted = false;
+  // todoForm = new FormGroup({
+  //   title: new FormControl("", Validators.required),
+  //   task: new FormControl("", Validators.required)
+  // });
   constructor(private todoListService: TodoService, private tokenStorage: TokenStorageService) { }
 
   ngOnInit(): void {
@@ -26,7 +32,7 @@ export class TodoListComponent implements OnInit {
     }
     this.getTodoList();
   }
-
+// get todo list
   getTodoList(){ 
     this.todoListService.getAll(this.userIdentity).subscribe(
       data =>{
@@ -38,6 +44,7 @@ export class TodoListComponent implements OnInit {
       }
     )
   }
+  // helper functions
   refreshList() {
     this.getTodoList();
     this.currentTodo = null;
@@ -47,14 +54,13 @@ export class TodoListComponent implements OnInit {
     this.currentTodo = todo;
     this.currentIndex = index;
   }
-
+// create new item fro TodoList
   createTask(){
     const data = {
       title: this.todo.title,
       task: this.todo.task,
       userIdentity: this.userIdentity
     };
-
     this.todoListService.create(data).subscribe(
       response =>{
         console.log(response);
@@ -73,4 +79,25 @@ export class TodoListComponent implements OnInit {
           userId:''
         };
   }
+
+  deleteTask(todoId: String) {
+    this.todoListService.delete(todoId)
+      .subscribe(
+        response => {
+          console.log(response);
+          this.getTodoList();
+          this.backToCreateTodo();
+        },
+        error => {
+          console.log(error);
+        });
+  }
+
+  backToCreateTodo() {
+    this.todoIdToUpdate = null;
+    // this.todoForm.reset();
+    this.processValidation = false;
+  }
+
 }
+

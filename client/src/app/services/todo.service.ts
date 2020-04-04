@@ -24,7 +24,7 @@ export class TodoService {
     return this.http.put(this.url + `/update-task/${id}`, data);
   }
   delete(id){
-    return this.http.delete(this.url + `/delete-task/${id}`);
+    return this.http.delete(`${this.url}/delete-task/${id}`);
   }
   
 }

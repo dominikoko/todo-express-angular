@@ -88,7 +88,7 @@ const db = require('../config/sequelizeConfig'),
     }
 
     exports.deleteTask = (req,res) =>{
-        const id = req.param.id;
+        const id = req.params.id;
     Todo.destroy({
         where: { id: id }
     }).
