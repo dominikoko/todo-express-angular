@@ -1,0 +1,8 @@
+<h4>Content from Server</h4>
+<div *ngIf="userInfo">
+    <p>username: <strong>{{userInfo.username}}</strong></p>
+    <p>Email: <strong>{{userInfo.email}}</strong></p>
+    <app-todo-list></app-todo-list>
+</div>
+{{content}}
+{{errorMessage}}
