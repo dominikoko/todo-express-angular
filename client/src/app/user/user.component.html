@@ -1,8 +1,9 @@
-<h4>Content from Server</h4>
-<div *ngIf="userInfo">
-    <p>username: <strong>{{userInfo.username}}</strong></p>
-    <p>Email: <strong>{{userInfo.email}}</strong></p>
+<div *ngIf="userInfo && info.token; else loggedOut">
+    
+    <h4 style="padding: 1rem">Hello! <strong style="text-transform: uppercase; padding: 0.5rem ">{{userInfo.username}}</strong>
+     <button class="btn btn-dark" (click)="logout()">Logout</button></h4>
     <app-todo-list></app-todo-list>
 </div>
-{{content}}
-{{errorMessage}}
+<ng-template #loggedOut>
+    Please login.
+  </ng-template>

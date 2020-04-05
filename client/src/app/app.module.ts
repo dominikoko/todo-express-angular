@@ -6,7 +6,6 @@ import {AppRoutingModule} from './app-routing.module'
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
-import { HomeComponent } from './home/home.component';
 import { TodoListComponent } from './todo-list/todo-list.component';
 import { UserComponent } from './user/user.component';
 import { httpInterceptorProviders } from './helpers/auth-interceptor';
@@ -19,7 +18,6 @@ import {TodoService} from './services/todo.service'
     AppComponent,
     LoginComponent,
     RegisterComponent,
-    HomeComponent,
     TodoListComponent,
     UserComponent
   ],

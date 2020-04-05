@@ -19,16 +19,10 @@ export class TodoListComponent implements OnInit {
   userIdentity:any
   todos: any;
   editTodo: Todo;
-  todoIdToUpdate = null;
-  processValidation = false;
   currentTodo = null;
   currentIndex = -1;
   submitted = false;
-  // todoForm = new FormGroup({
-  //   title: new FormControl("", Validators.required),
-  //   task: new FormControl("", Validators.required)
-  // });
-  constructor(private todoListService: TodoService, private tokenStorage: TokenStorageService) { }
+  constructor(private todoListService: TodoService, private tokenStorage: TokenStorageService) {}
 
   ngOnInit(): void {
     if(this.tokenStorage.getToken()){
@@ -54,17 +48,8 @@ export class TodoListComponent implements OnInit {
       }
     )
   }
-  // helper functions
-  refreshList() {
-    this.getTodoList();
-    this.currentTodo = null;
-    this.currentIndex = -1;
-  }
-  setActiveTodo(todo, index) {
-    this.currentTodo = todo;
-    this.currentIndex = index;
-  }
-// create new item fro TodoList
+ 
+// create new item for TodoList
   createTask(){
     const data = {
       title: this.todo.title,
@@ -75,14 +60,16 @@ export class TodoListComponent implements OnInit {
       response =>{
         console.log(response);
         this.submitted = true;
+        this.getTodoList();
       },
       error =>{
         console.log(error);
       }
       );
       }
+// New empty task ready to be send to the server
       newTask(){
-       // this.submitted = false;
+        this.submitted = false;
         this.todo = {
           id:'',
           title: '',
@@ -90,12 +77,13 @@ export class TodoListComponent implements OnInit {
           userId:''
         };
   }
-
+// updating task
   updateTask(todoId:String) {
     if (this.editTodo) {
       this.todoListService.update(todoId, this.editTodo).subscribe(response => {
         console.log(response);
         this.message = 'The tutorial was updated successfully!';
+        this.getTodoList();
       },
       error => {
         console.log(error);
@@ -111,18 +99,13 @@ export class TodoListComponent implements OnInit {
         response => {
           console.log(response);
           this.getTodoList();
-          this.backToCreateTodo();
         },
         error => {
           console.log(error);
         });
   }
 
-  backToCreateTodo() {
-    this.todoIdToUpdate = null;
-    // this.todoForm.reset();
-    this.processValidation = false;
-  }
+
 
 }
 

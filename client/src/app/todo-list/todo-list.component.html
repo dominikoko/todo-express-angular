@@ -25,7 +25,8 @@
 
     <button (click)="createTask()" class="btn btn-success">Submit</button>
   </div>
-
+  <br><br>
+  <h4 style="text-align:left;  padding: 1rem"> Your Todo List</h4>
   <div *ngIf="submitted">
     <h4>You submitted successfully!</h4>
     <button class="btn btn-success" (click)="newTask()">Add</button>
@@ -33,21 +34,22 @@
 
   <table class="table" style="margin: 1 auto;" *ngIf="todos">
     <tr>
-      <!-- <th>Id</th> -->
       <th>Title</th>
       <th>task</th>
       <th></th>
       <th></th>
     </tr>
-    <tr *ngFor="let todo of todos">
+    <tr *ngFor="let todo of todos" >
     <td class="text-left ">
         <a (click)="edit(todo)">
             <span *ngIf="todo!==editTodo">{{todo.title}}</span>
-            <input *ngIf="todo===editTodo" [(ngModel)]="todo.title" (blur)="updateTask(todo.id)" (keyup.enter)="updateTask(todo.id) ">
+            <input *ngIf="todo===editTodo " [(ngModel)]="todo.title" (blur)="updateTask(todo.id)" (keyup.enter)="updateTask(todo.id)"
+            
+            >
         </a>
     </td>
     
-    <td class="text-left ">
+    <td class="text-left">
         <a (click)="edit(todo)">
             <span *ngIf="todo!==editTodo">{{todo.task}}</span>
             <input *ngIf="todo===editTodo" [(ngModel)]="todo.task" (blur)="updateTask(todo.id)" (keyup.enter)="updateTask(todo.id) ">
