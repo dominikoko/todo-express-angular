@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TodoService } from '../services/todo.service';
 import { TokenStorageService } from '../services/token-storage.service';
+import { Todo } from './todo';
 
 @Component({
   selector: 'app-todo-list',
@@ -9,12 +10,15 @@ import { TokenStorageService } from '../services/token-storage.service';
 })
 export class TodoListComponent implements OnInit {
   todo = {
+    id:'',
     userId:'',
     title: '',
     task: ''
   };
+  message = '';
   userIdentity:any
   todos: any;
+  editTodo: Todo;
   todoIdToUpdate = null;
   processValidation = false;
   currentTodo = null;
@@ -31,7 +35,13 @@ export class TodoListComponent implements OnInit {
       this.userIdentity = sessionStorage.getItem('userIdentity');
     }
     this.getTodoList();
+ 
   }
+
+  edit(todo) {
+    this.editTodo = todo
+  }
+
 // get todo list
   getTodoList(){ 
     this.todoListService.getAll(this.userIdentity).subscribe(
@@ -72,12 +82,27 @@ export class TodoListComponent implements OnInit {
       );
       }
       newTask(){
-        this.submitted = false;
+       // this.submitted = false;
         this.todo = {
+          id:'',
           title: '',
           task: '',
           userId:''
         };
+  }
+
+  updateTask(todoId:String) {
+    if (this.editTodo) {
+      this.todoListService.update(todoId, this.editTodo).subscribe(response => {
+        console.log(response);
+        this.message = 'The tutorial was updated successfully!';
+      },
+      error => {
+        console.log(error);
+      
+      this.editTodo = undefined
+    });
+    }
   }
 
   deleteTask(todoId: String) {

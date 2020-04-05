@@ -67,7 +67,7 @@ const db = require('../config/sequelizeConfig'),
     }
     
     exports.updateTask = (req,res) =>{
-        const id = req.param.id;
+        const id = req.params.id;
     Todo.update(req.body,{
         where: { id: id }
     }).

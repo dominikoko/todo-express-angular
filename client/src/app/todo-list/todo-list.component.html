@@ -40,13 +40,19 @@
       <th></th>
     </tr>
     <tr *ngFor="let todo of todos">
-      <td class="text-left">
-        <span>{{ todo.title }}</span>
-        <!-- <input  [(ngModel)]="todo.title"  > -->
-      </td>
-
-      <span>{{ todo.task }}</span>
-      <!-- <input  [(ngModel)]="todo.task"  > -->
+    <td class="text-left ">
+        <a (click)="edit(todo)">
+            <span *ngIf="todo!==editTodo">{{todo.title}}</span>
+            <input *ngIf="todo===editTodo" [(ngModel)]="todo.title" (blur)="updateTask(todo.id)" (keyup.enter)="updateTask(todo.id) ">
+        </a>
+    </td>
+    
+    <td class="text-left ">
+        <a (click)="edit(todo)">
+            <span *ngIf="todo!==editTodo">{{todo.task}}</span>
+            <input *ngIf="todo===editTodo" [(ngModel)]="todo.task" (blur)="updateTask(todo.id)" (keyup.enter)="updateTask(todo.id) ">
+        </a>
+    </td>
       <td>
         <button
           class="btn btn-primary"
