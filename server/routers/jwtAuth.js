@@ -1,9 +1,9 @@
 const jwt = require('jsonwebtoken'),
     secret = require('../config/secret').secret,
-    db = require('../config/sequelizeConfig'),
+
    
 
-verifyToken = (req,res,next) =>{
+verifyToken = async (req,res,next) =>{
     let token = req.headers['x-access-token'];
     
     if(!token){
@@ -12,7 +12,7 @@ verifyToken = (req,res,next) =>{
         });
     }
 
-    jwt.verify(token, secret, (err,decodedData)=>{
+    await jwt.verify(token, secret, (err,decodedData)=>{
         if(err){
             return res.status(500).send({
                 auth:false, message: 'Authentication fail' + err
