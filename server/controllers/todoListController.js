@@ -1,109 +1,120 @@
-const db = require('../config/sequelizeConfig'),
-    secret = require('../config/secret').secret,
-    User = db.user,
-    Todo = db.todo,
-    jwt = require('jsonwebtoken'),
-    brypt = require('bcrypt');
+const db = require("../config/sequelizeConfig"),
+  User = db.user,
+  Todo = db.todo;
 
-    const Op = db.Sequelize.Op;
+const Op = db.Sequelize.Op;
 
-    exports.createTask = (req,res) =>{
-        if (!req.body.title && !req.body.task) {
-            res.status(400).send({
-              message: "Content can not be empty!"
-            });
-            return;
-          }
-        
-    Todo.create({
-        title: req.body.title,
-        task: req.body.task,
-        userId: req.body.userIdentity
-    }).then(data =>{
-        res.send(data);
-        res.send({message: "task created successfully"});
-        res.status(200).json({
-            status: 'success',
-            data: req.body,
-        }).catch(err=>{
-            res.status(500).send({reason: err || "error while creating the task"})
-        });
+exports.createTask = async (req, res) => {
+  try {
+    if (!req.body.title && !req.body.task) {
+      res.status(400).send({
+        reason: err,
+        message: "Content can not be empty!",
+      });
+      return;
+    }
+
+    const todo = await Todo.create({
+      title: req.body.title,
+      task: req.body.task,
+      userId: req.body.userIdentity,
     });
-    }
-
-    exports.getList = (req,res) =>{
-        const identity = req.params.id;
-        Todo.findAll({
-         include: [{model: User}],
-         where:{
-            userId:{
-                [Op.eq]: identity
-            }
-         }
-    }).then(data =>{
-        res.send(data);
-        res.send({message: "got all taskts"});
-        res.status(200).json({
-            status: 'success'
-        }).catch(err=>{
-            res.status(500).send({reason: err || "error why retrieving todo-list"})
-        });
+    res.send(todo);
+    res.send({ message: "task created successfully" });
+    res.status(200).json({
+      status: "success",
+      todo: req.body,
     });
-    }
-    
-    
-    exports.getTask = (req,res) =>{
-        const id = req.param.id;
-    Todo.findByPk(id).
-    then(data =>{
-        res.send(data);
-        res.send({message: "got task with id:" + id});
-        res.status(200).json({
-            status: 'success'
-        }).catch(err=>{
-            res.status(500).send({reason: err || "error why retrieving task with id" + id})
-        });
+  } catch (err) {
+    res
+      .status(500)
+      .send({ reason: err, message: "error while creating the task" });
+  }
+};
+
+exports.getList = async (req, res, next) => {
+  const identity = req.params.id;
+
+  try {
+    const listOfTodos = await Todo.findAll({
+      include: [{ model: User }],
+      where: {
+        userId: {
+          [Op.eq]: identity,
+        },
+      },
     });
-    }
-    
-    exports.updateTask = (req,res) =>{
-        const id = req.params.id;
-    Todo.update(req.body,{
-        where: { id: id }
-    }).
-    then(num =>{
-        if(num == 1){
-            res.send({
-                message: "task updated"
-            });
 
-            res.send({
-                message: "can't update task with id = " + id
-            })
-        }
-    
-        }).catch(err=>{
-            res.status(500).send({reason: err || "error why updating task with id" + id})
-        });
-    }
+    res.send(listOfTodos);
+    res.send({ message: "got all tasks" });
+    res.status(200).json({
+      status: "success",
+    });
+  } catch (err) {
+    res
+      .status(500)
+      .send({ reason: err, message: "error why retrieving todo-list" });
+  }
+};
 
-    exports.deleteTask = (req,res) =>{
-        const id = req.params.id;
-    Todo.destroy({
-        where: { id: id }
-    }).
-    then(num =>{
-        if(num == 1){
-            res.send({
-                message: "task deleted"
-            });
+exports.getTask = async (req, res) => {
+  const id = req.param.id;
+  try {
+    const specificTodo = await Todo.findByPk(id);
 
-            res.send({
-                message: "can't delete task with id = " + id
-            })
-        }
-    
-        }).catch(err=>{
-            res.status(500).send({reason: err || "error why deleting task with id" + id})
-        });
+    res.send(specificTodo);
+    res.send({ message: "got todo with id:" + id });
+    res.status(200).json({
+      status: "success",
+    });
+  } catch (err) {
+    res
+      .status(500)
+      .send({ reason: err || "error why retrieving todo with id" + id });
+  }
+};
+
+exports.updateTask = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const todoToUpdate = await Todo.update(req.body, {
+      where: { id: id },
+    });
+
+    if (todoToUpdate == 1) {
+      res.send({
+        message: "task updated",
+      });
+
+      res.send({
+        message: "can't update task with id = " + id,
+      });
     }
+  } catch (err) {
+    res
+      .status(500)
+      .send({ reason: err || "error why updating task with id" + id });
+  }
+};
+exports.deleteTask = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const todoToDestroy = await Todo.destroy({
+      where: { id: id },
+    });
+
+    if (todoToDestroy == 1) {
+      res.send({
+        message: "task deleted",
+      });
+
+      res.send({
+        message: "can't delete task with id = " + id,
+      });
+    }
+  } catch (err) {
+    res
+      .status(500)
+      .send({ reason: err || "error why deleting task with id" + id });
+  }
+};
