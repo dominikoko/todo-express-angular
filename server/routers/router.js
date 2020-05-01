@@ -1,11 +1,10 @@
-const verifySignUp = require("./verifySignUp"),
-  jwtAuth = require("./jwtAuth");
-
-module.exports = function(app) {
-  const controller = require("../controllers/controller");
+module.exports = function (app) {
+  const verifySignUp = require("../controllers/verifySignUp");
+  const jwtAuth = require("../controllers/jwtAuth");
+  const userController = require("../controllers/userController");
   const todoListController = require("../controllers/todoListController");
 
-  app.use(function(req, res, next) {
++  app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header(
       "Access-Control-Allow-Headers",
@@ -14,22 +13,39 @@ module.exports = function(app) {
     next();
   });
 
-  app.post("/auth/signup",[verifySignUp.checkDuplicates],
-    controller.signUp
+  app.post("/auth/signup", [verifySignUp.checkDuplicates], userController.signUp);
+
+  app.post("/auth/signin", userController.signIn);
+
+  app.get("/test/user", [jwtAuth.verifyToken], userController.userContent);
+
+  app.post(
+    "/create-task",
+    [jwtAuth.verifyToken],
+    todoListController.createTask
   );
 
-  app.post("/auth/signin", controller.signIn);
+  app.get(
+    "/get-todo-list/:id",
+    [jwtAuth.verifyToken],
+    todoListController.getList
+  );
 
-  app.get("/test/user", [jwtAuth.verifyToken], controller.userContent);
-  
-  app.post("/create-task",[jwtAuth.verifyToken],todoListController.createTask);
+  app.get(
+    "/get-task-by-id/:id",
+    [jwtAuth.verifyToken],
+    todoListController.getTask
+  );
 
-  app.get("/get-todo-list/:id",[jwtAuth.verifyToken],todoListController.getList);
+  app.put(
+    "/update-task/:id",
+    [jwtAuth.verifyToken],
+    todoListController.updateTask
+  );
 
-  app.get("/get-task-by-id/:id",[jwtAuth.verifyToken],todoListController.getTask);
-
-  app.put("/update-task/:id",[jwtAuth.verifyToken],todoListController.updateTask);
-
-  app.delete("/delete-task/:id",[jwtAuth.verifyToken],todoListController.deleteTask);
-
+  app.delete(
+    "/delete-task/:id",
+    [jwtAuth.verifyToken],
+    todoListController.deleteTask
+  );
 };
