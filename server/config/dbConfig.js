@@ -1,6 +1,7 @@
 const dbConfig = {
   database: 'usersDB',
   username: 'root',
+  port: 3000,
   password: 'passWORD',
   host: 'localhost',
   dialect: 'mysql',
